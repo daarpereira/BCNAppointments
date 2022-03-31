@@ -56,16 +56,16 @@ def Send_Email():
         print ('Something went wrong...',e)
 
 #Operations to open browser and select NIE appointment
+chrome_options = Options()
+chrome_options.add_argument("--headless")
 
-driver = webdriver.Chrome(r'C:\Users\David Pereira\Documents\chromedriver_win32\chromedriver.exe')
+driver = webdriver.Chrome(r'C:\Users\David Pereira\Documents\chromedriver_win32\chromedriver.exe',chrome_options=chrome_options)
 driver.get("https://sede.administracionespublicas.gob.es/icpplustieb/citar?p=8&locale=es")
-driver.maximize_window()
 
 time.sleep(2)
-#*******LOGIN***************
 
-# find username and fill
 tramites_options = driver.find_element(by=By.XPATH, value='//*[@id="tramiteGrupo[0]"]')
+
 #scroll to element
 driver.execute_script("arguments[0].scrollIntoView();", tramites_options)
 tramites = Select(driver.find_element(by=By.XPATH, value='//*[@id="tramiteGrupo[0]"]'))
@@ -101,8 +101,13 @@ Message_NoAppointment = driver.find_element(by=By.XPATH, value='//*[@id="mainWin
 appointment_not_available_text = "En este momento no hay citas disponibles"
 if appointment_not_available_text in Message_NoAppointment.text:
     print("Appointment not available")
+    Send_Email()
 else:
     print("Available")
     Send_Email()
+   
+
+time.sleep(2)
+driver.close()
 
 
